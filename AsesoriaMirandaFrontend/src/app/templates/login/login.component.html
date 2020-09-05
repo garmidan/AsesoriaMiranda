@@ -1,0 +1,16 @@
+<div class="login-box" id="usua">
+    <h1>Login</h1>
+    <form #projectForm="ngForm" (ngSubmit)="login($event)">
+        <label form="username"> Correo</label>
+        <input type="text" name="user" #user="ngModel" [(ngModel)]="usuario" placeholder="Usuario">
+
+        <label form="password"> Contraseña</label>
+        <input type="password" name="password" #password="ngModel" [(ngModel)]="clave" placeholder="Contraseña">
+
+        <input type="submit" value="Validar">
+
+        <a onclick="$('#usua').hide('slow');$('#contra').show('hide');">Perdiste tu contraseña</a><br>
+        <a onclick="$('#usua').hide('slow');$('#regis').show('hide');">No tienes una cuenta? </a>
+    </form>
+    
+</div>
