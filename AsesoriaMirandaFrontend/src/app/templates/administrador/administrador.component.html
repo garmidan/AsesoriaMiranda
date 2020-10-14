@@ -1,0 +1,76 @@
+<div class="row">
+    <app-lateral></app-lateral>
+    <div class="col-9">
+        <div class="tab-content" id="v-pills-tabContent">
+            <!-- Button trigger modal -->
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                Crear Usuario
+            </button>
+
+            <!-- Modal -->
+            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <form #projectForm="ngForm" (ngSubmit)="registroUsuario($event)">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Crear Usuario</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <label>Nombres</label>
+                                    <input type="text" name="nombres"
+                                        onkeyup="javascript:this.value=this.value.toUpperCase();" #nombres="ngModel"
+                                        [(ngModel)]="usuarioDatos.nombres" class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label>Apellidos</label>
+                                    <input type="text" name="apellidos"
+                                        onkeyup="javascript:this.value=this.value.toUpperCase();" #apellidos="ngModel"
+                                        [(ngModel)]="usuarioDatos.apellidos" class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label>Celular *</label>
+                                    <input type="number" name="celular" #celular="ngModel"
+                                        [(ngModel)]="usuarioDatos.celular" class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label>Telefono *</label>
+                                    <input type="number" name="telefono" #telefono="ngModel"
+                                        [(ngModel)]="usuarioDatos.telefono" class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label>Direccion </label>
+                                    <input type="text" name="direccion" #direccion="ngModel"
+                                        [(ngModel)]="usuarioDatos.direccion" class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label>Correo </label>
+                                    <input type="email" name="correo" #correo="ngModel"
+                                        [(ngModel)]="usuarioDatos.correo" class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label for="exampleFormControlSelect1">Seleccione Rol</label>
+                                    <select class="form-control" name="idrol" #idrol="ngModel"
+                                        [(ngModel)]="usuarioDatos.rol.idrol">
+                                        <option>Seleccione</option>
+                                        <option *ngFor="let rol of listaRol" value="{{rol.idrol}}" id="valor">
+                                            {{rol.nombre}}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <input type="submit" class="btn btn-primary" value="Validar">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

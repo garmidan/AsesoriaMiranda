@@ -39,8 +39,14 @@ public class UsuarioEntity {
 	@Column(name = "correo", precision = 50)
 	private String correo;
 	
+	@Column(name = "usuario", precision = 50)
+	private String usuario;
+	
 	@Column(name = "clave", precision = 50)
 	private String clave;
+	
+	@Column(name = "recupcontraseña", precision = 11)
+	private Long recupcontraseña;
 	
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
 	@JoinColumn(name = "idrol", nullable = false)
@@ -51,7 +57,7 @@ public class UsuarioEntity {
 	}
 
 	public UsuarioEntity(Long idusuario, String nombres, String apellidos, String celular, String telefono,
-			String direccion, String correo, String clave, RolEntity rol) {
+			String direccion, String correo, String usuario, String clave, Long recupcontraseña, RolEntity rol) {
 		this.idusuario = idusuario;
 		this.nombres = nombres;
 		this.apellidos = apellidos;
@@ -59,9 +65,12 @@ public class UsuarioEntity {
 		this.telefono = telefono;
 		this.direccion = direccion;
 		this.correo = correo;
+		this.usuario = usuario;
 		this.clave = clave;
+		this.recupcontraseña = recupcontraseña;
 		this.rol = rol;
 	}
+
 
 	public Long getIdusuario() {
 		return idusuario;
@@ -118,6 +127,14 @@ public class UsuarioEntity {
 	public void setCorreo(String correo) {
 		this.correo = correo;
 	}
+	
+	public String getUsuario() {
+		return usuario;
+	}
+
+	public void setUsuario(String usuario) {
+		this.usuario = usuario;
+	}
 
 	public String getClave() {
 		return clave;
@@ -125,6 +142,14 @@ public class UsuarioEntity {
 
 	public void setClave(String clave) {
 		this.clave = clave;
+	}
+
+	public Long getRecupcontraseña() {
+		return recupcontraseña;
+	}
+
+	public void setRecupcontraseña(Long recupcontraseña) {
+		this.recupcontraseña = recupcontraseña;
 	}
 
 	public RolEntity getRol() {
@@ -139,7 +164,8 @@ public class UsuarioEntity {
 	public String toString() {
 		return "UsuarioEntity [idusuario=" + idusuario + ", nombres=" + nombres + ", apellidos=" + apellidos
 				+ ", celular=" + celular + ", telefono=" + telefono + ", direccion=" + direccion + ", correo=" + correo
-				+ ", clave=" + clave + ", rol=" + rol + "]";
+				+ ", usuario=" + usuario + ", clave=" + clave + ", recupcontraseña=" + recupcontraseña + ", rol=" + rol
+				+ "]";
 	}
 
 	@Override
@@ -153,8 +179,10 @@ public class UsuarioEntity {
 		result = prime * result + ((direccion == null) ? 0 : direccion.hashCode());
 		result = prime * result + ((idusuario == null) ? 0 : idusuario.hashCode());
 		result = prime * result + ((nombres == null) ? 0 : nombres.hashCode());
+		result = prime * result + ((recupcontraseña == null) ? 0 : recupcontraseña.hashCode());
 		result = prime * result + ((rol == null) ? 0 : rol.hashCode());
 		result = prime * result + ((telefono == null) ? 0 : telefono.hashCode());
+		result = prime * result + ((usuario == null) ? 0 : usuario.hashCode());
 		return result;
 	}
 
@@ -202,6 +230,11 @@ public class UsuarioEntity {
 				return false;
 		} else if (!nombres.equals(other.nombres))
 			return false;
+		if (recupcontraseña == null) {
+			if (other.recupcontraseña != null)
+				return false;
+		} else if (!recupcontraseña.equals(other.recupcontraseña))
+			return false;
 		if (rol == null) {
 			if (other.rol != null)
 				return false;
@@ -212,7 +245,13 @@ public class UsuarioEntity {
 				return false;
 		} else if (!telefono.equals(other.telefono))
 			return false;
+		if (usuario == null) {
+			if (other.usuario != null)
+				return false;
+		} else if (!usuario.equals(other.usuario))
+			return false;
 		return true;
 	}
+	
 
 }

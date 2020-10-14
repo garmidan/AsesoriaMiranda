@@ -1,8 +1,11 @@
 export class Rol{
-    constructor(
-        public idrol: number,
-        public nombre:string
-    ){
 
+    public idrol: number;
+    public nombre:string;
+
+    constructor(idrol:number,nombre:string){
+        this.idrol = idrol;
+        this.nombre = nombre;
     }
+
 }

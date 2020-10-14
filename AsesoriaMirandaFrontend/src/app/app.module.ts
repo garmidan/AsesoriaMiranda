@@ -7,6 +7,11 @@ import { AppComponent } from './app.component';
 import { LoginComponent } from './templates/login/login.component';
 import { HomeComponent } from './templates/home/home.component';
 import { AcercaComponent } from './templates/acerca/acerca.component';
+import { CabezeraComponent } from './templates/cabezera/cabezera.component';
+import { AdministradorComponent } from './templates/administrador/administrador.component';
+import { ErrorRutaComponent } from './templates/error-ruta/error-ruta.component';
+import { ClienteComponent } from './templates/administrador/cliente/cliente.component';
+import { LateralComponent } from './templates/administrador/lateral/lateral.component';
 
 @NgModule({
   declarations: [
@@ -14,6 +19,11 @@ import { AcercaComponent } from './templates/acerca/acerca.component';
     LoginComponent,
     HomeComponent,
     AcercaComponent,
+    CabezeraComponent,
+    AdministradorComponent,
+    ErrorRutaComponent,
+    ClienteComponent,
+    LateralComponent,
   ],
   imports: [
     BrowserModule,
