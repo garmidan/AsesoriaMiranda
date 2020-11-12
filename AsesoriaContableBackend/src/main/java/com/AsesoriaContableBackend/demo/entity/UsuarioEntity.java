@@ -56,8 +56,11 @@ public class UsuarioEntity {
 	public UsuarioEntity() {
 	}
 
+	
+
 	public UsuarioEntity(Long idusuario, String nombres, String apellidos, String celular, String telefono,
-			String direccion, String correo, String usuario, String clave, Long recupcontraseña, RolEntity rol) {
+			String direccion, String correo, String usuario, String clave, Long recupcontraseña,
+			RolEntity rol) {
 		this.idusuario = idusuario;
 		this.nombres = nombres;
 		this.apellidos = apellidos;
@@ -70,6 +73,7 @@ public class UsuarioEntity {
 		this.recupcontraseña = recupcontraseña;
 		this.rol = rol;
 	}
+
 
 
 	public Long getIdusuario() {
@@ -143,6 +147,8 @@ public class UsuarioEntity {
 	public void setClave(String clave) {
 		this.clave = clave;
 	}
+	
+	
 
 	public Long getRecupcontraseña() {
 		return recupcontraseña;
@@ -160,13 +166,17 @@ public class UsuarioEntity {
 		this.rol = rol;
 	}
 
+
+
 	@Override
 	public String toString() {
 		return "UsuarioEntity [idusuario=" + idusuario + ", nombres=" + nombres + ", apellidos=" + apellidos
 				+ ", celular=" + celular + ", telefono=" + telefono + ", direccion=" + direccion + ", correo=" + correo
-				+ ", usuario=" + usuario + ", clave=" + clave + ", recupcontraseña=" + recupcontraseña + ", rol=" + rol
-				+ "]";
+				+ ", usuario=" + usuario + ", clave=" + clave + ", recupcontraseña="
+				+ recupcontraseña + ", rol=" + rol + "]";
 	}
+
+
 
 	@Override
 	public int hashCode() {
@@ -185,6 +195,8 @@ public class UsuarioEntity {
 		result = prime * result + ((usuario == null) ? 0 : usuario.hashCode());
 		return result;
 	}
+
+
 
 	@Override
 	public boolean equals(Object obj) {
@@ -252,6 +264,5 @@ public class UsuarioEntity {
 			return false;
 		return true;
 	}
-	
 
 }

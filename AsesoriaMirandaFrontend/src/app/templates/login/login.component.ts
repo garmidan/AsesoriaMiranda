@@ -4,6 +4,7 @@ import { Usuario } from 'src/app/models/Usuario';
 import swal from 'sweetalert2';
 import { Router } from '@angular/router';
 import { Rol } from 'src/app/models/Rol';
+import { Inicio } from 'src/app/models/Inicio';
 declare var jQuery: any;
 declare var $: any;
 @Component({
@@ -12,9 +13,6 @@ declare var $: any;
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
-
-  usuario: string = "";
-  clave: string = "";
   recuadro: string = "";
   validarCorreo: number = 0;
   confirmarRecuadro: string = "";
@@ -23,9 +21,11 @@ export class LoginComponent implements OnInit {
   claveCambiar2: string = "";
   pattern: string = "(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&*+=])(?=\\S+$).{8,}";
   public usuarioLogin: Usuario;
+  public datos:Inicio;
 
   constructor(private usuuarioService: UsuarioService, private router: Router) {
     this.usuarioLogin = new Usuario(0, "", "", "", "", "", "", "", "", 0, new Rol(0, ""));
+    this.datos = new Inicio("","");
   }
 
   ngOnInit(): void {
@@ -45,33 +45,23 @@ export class LoginComponent implements OnInit {
 
   public login(event) {
     event.preventDefault();
-    if (this.usuario == null || this.usuario == "" || this.clave == null || this.clave == ""
+    if (this.datos.username == null || this.datos.username== "" || this.datos.clave == null || this.datos.clave == ""
       || this.recuadro == null || this.recuadro == "") {
       swal.fire('Informacion !!', 'Los campos son obligatorios', 'warning');
     } else {
       if (this.confirmarRecuadro == this.recuadro) {
-        this.usuuarioService.login(this.usuario, this.clave).subscribe(
+        this.usuuarioService.login(this.datos).subscribe(
           response => {
             this.usuarioLogin = response;
-            if (this.usuarioLogin != null) {
-              if (this.usuarioLogin.recupcontraseña == 1) {
-                $("#usua").hide('slow');
-                $("#cambiocontraseña").show('slow');
-              } else {
-                if (this.usuarioLogin.rol.nombre == "Administrador") {
-                  localStorage.setItem('isLoggedIn', "true");
-                  this.router.navigate(['administrador']);
-                } else {
-                  localStorage.setItem('isLoggedIn', "true");
-                  this.router.navigate(['administrado']);
-                }
-              }
+            if (this.usuarioLogin == null) {
+              swal.fire('Informacion !!', 'Asegurese de que los datos sean correctos', 'warning');
             } else {
-              swal.fire('Informacion !!', 'Confirme que los datos sean correctos', 'warning');
+              localStorage.setItem("isLoggedIn","true");
+              this.router.navigate([this.usuarioLogin.rol.nombre]);
             }
           },
           error => {
-            this.clave = null;
+            this.datos.clave = null;
           }
         )
       } else {

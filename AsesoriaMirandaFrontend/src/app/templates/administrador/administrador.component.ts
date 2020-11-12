@@ -15,7 +15,9 @@ declare var $: any;
 export class AdministradorComponent implements OnInit {
   rol:Rol = new Rol(0,"");
   usuarioDatos:Usuario = new Usuario(0,"","","","","","","","",0,this.rol);
-  listaRol:Rol[]
+  listaRol:Rol[];
+  datosUser:Usuario = new Usuario(0,"","","","","","","","",0,this.rol);
+  recuperarToken:string = "";
   constructor(private router: Router, private userService:UsuarioService) { }
 
   ngOnInit(): void {
@@ -29,12 +31,23 @@ export class AdministradorComponent implements OnInit {
     }
   }
 
+
   getRol(){
-    this.userService.getRol().subscribe(
-     response => {
-      this.listaRol = response;
-     }
-      );
+    this.userService.recuperarToken().subscribe(
+      response => {
+       for (const key in response) {
+         if (Object.prototype.hasOwnProperty.call(response, key)) {
+           const element = response[key];
+           this.recuperarToken = element;
+            this.userService.getRol(this.recuperarToken).subscribe(
+            response => {
+            this.listaRol = response;
+            }
+          );
+         }
+       }
+      }
+       );
   }
 
   registroUsuario(event){

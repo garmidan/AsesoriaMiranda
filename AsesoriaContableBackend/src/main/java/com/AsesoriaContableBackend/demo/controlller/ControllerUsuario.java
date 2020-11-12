@@ -1,17 +1,20 @@
 package com.AsesoriaContableBackend.demo.controlller;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 
 import org.apache.commons.io.FileUtils;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobParameters;
@@ -23,10 +26,12 @@ import org.springframework.batch.core.configuration.annotation.JobBuilderFactory
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.data.redis.RedisProperties.Lettuce.Cluster.Refresh;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,18 +40,24 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import com.AsesoriaContableBackend.demo.clases.Cliente;
+import com.AsesoriaContableBackend.demo.clases.Inicio;
 import com.AsesoriaContableBackend.demo.dao.RolDao;
 import com.AsesoriaContableBackend.demo.dao.UsuarioDao;
 import com.AsesoriaContableBackend.demo.email.EmailServiceImpl;
 import com.AsesoriaContableBackend.demo.entity.RolEntity;
 import com.AsesoriaContableBackend.demo.entity.UsuarioEntity;
+import com.AsesoriaContableBackend.demo.security.JWTAuthorizationFilter;
 import com.AsesoriaContableBackend.demo.step.Procesor;
 import com.AsesoriaContableBackend.demo.step.Reader;
 import com.AsesoriaContableBackend.demo.step.Writer;
+
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 
 @RestController
 @RequestMapping("/")
@@ -63,9 +74,14 @@ public class ControllerUsuario {
 	@Autowired
 	JobLauncher jobLauncher;
 	
+	
 	private String archivoFile = "";
 	
 	private int salida = 0;
+	
+	private UsuarioEntity recuperDatos = new UsuarioEntity();
+	
+	private String recuperarToken = null;
 
 	@Autowired
 	private BCryptPasswordEncoder encoder;
@@ -85,7 +101,6 @@ public class ControllerUsuario {
 	
 	@Value("archivoFileNombre")
 	private String archivoFileNombre;
-
 	
 	@Autowired
 	DataSource dataSource;
@@ -100,18 +115,6 @@ public class ControllerUsuario {
 		return new ResponseEntity<List<UsuarioEntity>>(usuarioDao.findAll(), HttpStatus.OK);
 	}
 
-	@GetMapping("login/{usuarioOcorreo}/{clave}")
-	public UsuarioEntity login(@PathVariable String usuarioOcorreo, @PathVariable String clave) {
-		UsuarioEntity userLog = usuarioDao.login(usuarioOcorreo, usuarioOcorreo);
-		if (userLog != null) {
-			if (encoder.matches(clave, userLog.getClave())) {
-			} else {
-				userLog = null;
-			}
-		}
-		return userLog;
-	
-	}
 
 	@PostMapping("register")
 	public int registerUsuario(@RequestBody UsuarioEntity usuario) {
@@ -228,7 +231,6 @@ public class ControllerUsuario {
 	
 	
 	@Autowired
-	@Bean
 	public Job importJob(@Value("url") String archivo) throws Exception {
 		archivoFileNombre = archivo;
 		return jobBuilderFactory.get("processJob")
@@ -237,7 +239,6 @@ public class ControllerUsuario {
 	}
 	
 	@Autowired
-	@Bean
 	public Step stepImport() throws Exception {
 		return stepBuilderFactory.get("step").<Cliente, Cliente>chunk(1200)
 				.reader(reader.reader(archivoFileNombre))
@@ -275,5 +276,57 @@ public class ControllerUsuario {
 	}
 	
 	
+//	Parte token validar sesion
+	@PostMapping("login")
+	public ResponseEntity<UsuarioEntity> login(@RequestBody Inicio sesion) {
+		UsuarioEntity userLog = usuarioDao.login(sesion.getUsername(), sesion.getUsername());
+		
+		HttpHeaders responseHeaders = new HttpHeaders();
+		if (userLog != null) {
+			if (encoder.matches(sesion.getClave(), userLog.getClave())) {
+				recuperDatos = userLog;
+				String token = getJWTToken(sesion.getUsername());
+				recuperarToken =token;
+			    responseHeaders.set("Authorization", 
+			      token);
+			} else {
+				userLog = new UsuarioEntity();
+			}
+		}else {
+			userLog = new UsuarioEntity();
+		}
+		return ResponseEntity.ok()
+			      .body(userLog);
+	
+	}
+
+	private String getJWTToken(String username) {
+		String secretKey = "1234";
+		List<GrantedAuthority> grantedAuthorities = AuthorityUtils
+				.commaSeparatedStringToAuthorityList("ROLE_USER");
+		
+		String token = Jwts
+				.builder()
+				.setId("softtekJWT")
+				.setSubject(username)
+				.claim("authorities",
+						grantedAuthorities.stream()
+								.map(GrantedAuthority::getAuthority)
+								.collect(Collectors.toList()))
+				.setIssuedAt(new Date(System.currentTimeMillis()))
+				.setExpiration(new Date(System.currentTimeMillis() + 600000))
+				.signWith(SignatureAlgorithm.HS512,
+						secretKey.getBytes()).compact();
+
+		return "Bearer " + token;
+	}
+	
+	@GetMapping("recuperDatos")
+	public ResponseEntity<String> recuperarToken() throws JSONException{
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.put("token", recuperarToken);
+		return ResponseEntity.ok()
+			      .body(jsonObject.toString());
+	}
 	
 }

@@ -12,6 +12,7 @@ import { AdministradorComponent } from './templates/administrador/administrador.
 import { ErrorRutaComponent } from './templates/error-ruta/error-ruta.component';
 import { ClienteComponent } from './templates/administrador/cliente/cliente.component';
 import { LateralComponent } from './templates/administrador/lateral/lateral.component';
+import { ProductoComponent } from './templates/producto/producto.component';
 
 @NgModule({
   declarations: [
@@ -24,6 +25,7 @@ import { LateralComponent } from './templates/administrador/lateral/lateral.comp
     ErrorRutaComponent,
     ClienteComponent,
     LateralComponent,
+    ProductoComponent,
   ],
   imports: [
     BrowserModule,
