@@ -6,6 +6,7 @@ import { Global } from './Global';
 import { Usuario } from '../models/Usuario';
 import { map } from 'rxjs/operators';
 import { Inicio } from '../models/Inicio';
+import { Movimiento } from '../models/Movimiento';
 @Injectable({
   providedIn: 'root'
 })
@@ -33,9 +34,9 @@ export class UsuarioService {
     return !(user === null)
   }
 
-  cambiarContraseña(contraseña, recupcontraseña, idusuario):Observable<any>{
+  cambiarContraseña(contraseña, recupcontraseña, idusuario, token:string):Observable<any>{
     let headers = new HttpHeaders({
-      "Authorization":"Bearer eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJzb2Z0dGVrSldUIiwic3ViIjoiZGFuZ2FyOTMiLCJhdXRob3JpdGllcyI6WyJST0xFX1VTRVIiXSwiaWF0IjoxNjA0MDAzNDIzLCJleHAiOjE2MDQwMDQwMjN9.GrH5zDTepzpDZA6GtYl9f8eU0YLHaiuqNk5S5pn8s_jZ3YgkiglWAqSqw-E8OrrWHWrMEDHraJficlR7d1z17g"
+      "Authorization":token
     });
     return this.http.get(this.url + 'cambiocontraseña/'+contraseña+'/'+recupcontraseña+'/'
     +idusuario, {headers:headers});
@@ -70,12 +71,12 @@ export class UsuarioService {
     return this.http.get(this.url + 'listaroles',{ headers: headers });
   }
 
-  registroUsuario(usuario:Usuario):Observable<any>{
+  registroUsuario(usuario:Usuario,token:string):Observable<any>{
     let params = JSON.stringify(usuario);
     let headers = new HttpHeaders({
-      "Authorization":"Bearer eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJzb2Z0dGVrSldUIiwic3ViIjoiZGFuZ2FyOTMiLCJhdXRob3JpdGllcyI6WyJST0xFX1VTRVIiXSwiaWF0IjoxNjA0MDAzNDIzLCJleHAiOjE2MDQwMDQwMjN9.GrH5zDTepzpDZA6GtYl9f8eU0YLHaiuqNk5S5pn8s_jZ3YgkiglWAqSqw-E8OrrWHWrMEDHraJficlR7d1z17g"
+      "Content-Type": "application/json",
+      "Authorization":token
     });
-    headers.set("Authorization","Bearer eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJzb2Z0dGVrSldUIiwic3ViIjoiZGFuZ2FyOTMiLCJhdXRob3JpdGllcyI6WyJST0xFX1VTRVIiXSwiaWF0IjoxNjAyODcwODE0LCJleHAiOjE2MDI4NzE0MTR9.xYqqF7mC6wE8dfk8TLjoK2tIb7csRBUXYHDjvhRDcy78e1GonkFtUim-A1c5F7GVlrasyZK0fboHM1PtSiOKuA");
     return this.http.post(this.url+'register', params, {headers: headers});
   }
 
@@ -88,5 +89,64 @@ export class UsuarioService {
 
   recuperarToken():Observable<any>{
     return this.http.get(this.url+'recuperDatos');
+  }
+
+  gettipomovimiento(token:string):Observable<any>{
+    let headers = new HttpHeaders({
+      "Authorization":token
+    });
+    return this.http.get(this.url + 'gettipomovimiento',{ headers: headers });
+  }
+
+  registermovimientoentrada(movimiento:Movimiento,token:string):Observable<any>{
+    let params = JSON.stringify(movimiento);
+    let headers = new HttpHeaders({
+      "Content-Type": "application/json",
+      "Authorization":token
+    });
+    return this.http.post(this.url+'registermovimientoentrada', params, {headers: headers});
+  }
+
+  gettipo(token:string):Observable<any>{
+    let headers = new HttpHeaders({
+      "Authorization":token
+    });
+    return this.http.get(this.url + 'gettipo',{ headers: headers });
+  }
+
+  getmarca(token:string):Observable<any>{
+    let headers = new HttpHeaders({
+      "Authorization":token
+    });
+    return this.http.get(this.url + 'getmarca',{ headers: headers });
+  }
+
+  datosUsuario(token:string):Observable<any>{
+    let headers = new HttpHeaders({
+      "Authorization":token
+    });
+    return this.http.get(this.url + 'datosUsuario',{ headers: headers });
+  }
+
+  
+  getmovimiento(token:string):Observable<any>{
+    let headers = new HttpHeaders({
+      "Authorization":token
+    });
+    return this.http.get(this.url + 'getmovimientos',{ headers: headers });
+  }
+
+  getproductos(token:string):Observable<any>{
+    let headers = new HttpHeaders({
+      "Authorization":token
+    });
+    return this.http.get(this.url + 'getproductos',{ headers: headers });
+  }
+
+  getMovimientosEntrada(token:string, idtipomovimiento:number):Observable<any>{
+    let headers = new HttpHeaders({
+      "Authorization":token
+    });
+    return this.http.get(this.url + 'getMovimientosEntrada'+'/'+idtipomovimiento,{ headers: headers });
   }
 }

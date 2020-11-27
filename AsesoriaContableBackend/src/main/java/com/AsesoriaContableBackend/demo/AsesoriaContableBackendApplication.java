@@ -9,8 +9,10 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.AsesoriaContableBackend.demo.manejoerrores.CustomAccessDeniedHandler;
 import com.AsesoriaContableBackend.demo.security.JWTAuthorizationFilter;
 @SpringBootApplication
 @EnableBatchProcessing
@@ -33,9 +35,9 @@ public class AsesoriaContableBackendApplication {
 				.addFilterAfter(new JWTAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class)
 				.authorizeRequests()
 				.antMatchers(HttpMethod.POST, "/login").permitAll()
+				.antMatchers(HttpMethod.GET, "/recuperarcontraseña/{correoOusuario}").permitAll()
 				.antMatchers(HttpMethod.GET, "/recuperDatos").permitAll()
 				.anyRequest().authenticated();
-			
 		}
 		
 		
@@ -46,6 +48,10 @@ public class AsesoriaContableBackendApplication {
 			return bCryptPasswordEncoder;
 		}
 		
+		@Bean
+		public AccessDeniedHandler accessDeniedHandler(){
+		    return new CustomAccessDeniedHandler();
+		}
 		
 	}
 

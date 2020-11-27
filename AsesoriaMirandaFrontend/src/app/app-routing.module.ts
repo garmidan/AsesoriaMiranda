@@ -5,6 +5,8 @@ import { HomeComponent } from './templates/home/home.component';
 import { AcercaComponent } from './templates/acerca/acerca.component';
 import { AdministradorComponent } from './templates/administrador/administrador.component';
 import { ClienteComponent } from './templates/administrador/cliente/cliente.component';
+import { ServiciosComponent } from './templates/administrador/servicios/servicios.component';
+import { VentasComponent } from './templates/administrador/ventas/ventas.component';
 
 
 
@@ -15,6 +17,8 @@ const routes: Routes = [
   { path: 'acerca', component: AcercaComponent },
   {path: 'Administrador', component:AdministradorComponent},
   {path: 'cliente', component:ClienteComponent},
+  {path: 'servicios', component:ServiciosComponent},
+  {path: 'ventas', component:VentasComponent},
 ];
 
 @NgModule({

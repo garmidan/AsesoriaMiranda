@@ -13,6 +13,8 @@ import { ErrorRutaComponent } from './templates/error-ruta/error-ruta.component'
 import { ClienteComponent } from './templates/administrador/cliente/cliente.component';
 import { LateralComponent } from './templates/administrador/lateral/lateral.component';
 import { ProductoComponent } from './templates/producto/producto.component';
+import { ServiciosComponent } from './templates/administrador/servicios/servicios.component';
+import { VentasComponent } from './templates/administrador/ventas/ventas.component';
 
 @NgModule({
   declarations: [
@@ -26,6 +28,8 @@ import { ProductoComponent } from './templates/producto/producto.component';
     ClienteComponent,
     LateralComponent,
     ProductoComponent,
+    ServiciosComponent,
+    VentasComponent,
   ],
   imports: [
     BrowserModule,

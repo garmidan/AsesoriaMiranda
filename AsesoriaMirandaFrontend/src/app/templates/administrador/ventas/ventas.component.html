@@ -1,0 +1,86 @@
+<div class="row">
+  <app-lateral></app-lateral>
+  <div class="col-6">
+    <h1 style="text-align: center;">Productos a la venta</h1>
+    <div class="card-deck">
+      <div class="card" *ngFor="let datmovimientos of  datosMovimientos">
+        <div class="card-body">
+          <h5 class="card-title">Marca: {{datmovimientos.producto.marca.nombre}}</h5>
+          <hr />
+          <h5 class="card-title">Tipo: {{datmovimientos.producto.tipo.nombre}}</h5>
+          <hr />
+          <p class="card-text">Descripción: {{datmovimientos.producto.descripcion}}</p>
+          <hr />
+          <h5 class="card-title">Precio: {{datmovimientos.precioentrada}}</h5>
+          <hr />
+          <h5 class="card-title">Cantidad Disponible: {{datmovimientos.producto.cantidad}}</h5>
+        </div>
+        <div class="card-footer">
+          <small class="text-muted" ><button 
+              class="btn btn-success" (click)="venta(datmovimientos)" type="button" data-toggle="modal"
+              data-target="#venta">Continuar</button></small>
+        </div>
+        <!--Modal Venta-->
+        <div class="modal fade" id="venta" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Digite los datos solicitados</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <div class="form-group">
+                  <label for="tipo">Tipo Producto</label>
+                  <span class="form-control">{{productSeleccionado.producto.tipo.nombre}}</span>
+                </div>
+                <div class="form-group">
+                  <label for="marca">Marca</label>
+                  <span class="form-control">{{productSeleccionado.producto.marca.nombre}}</span>
+                </div>
+                <div class="form-group">
+                  <label for="candisponible">Cantidad Disponible</label>
+                  <span class="form-control">{{productSeleccionado.producto.cantidad}}</span>
+                </div>
+                <div class="form-group">
+                  <label for="candisponible">Precio</label>
+                  <span class="form-control">{{productSeleccionado.precioentrada}}</span>
+                </div>
+              <div class="form-group">
+                <label for="cantidad">Cantidad Solicitada</label>
+                <input name="cantidad" type="text" class="form-control" id="cantidad">
+              </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" (click)="cantidadSeleccionada()" class="btn btn-primary">Guardar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-3" *ngIf="productSeleccionado" style="display: none;" id="productosseleccionados">
+    <h4>Productos Seleccionado</h4>
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">First</th>
+          <th scope="col">Last</th>
+          <th scope="col">Handle</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let dat of listaPorductosSeleccionados">
+          <th scope="row">{{dat.cantidad}}</th>
+          <td>Mark</td>
+          <td>Otto</td>
+          <td>@mdo</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

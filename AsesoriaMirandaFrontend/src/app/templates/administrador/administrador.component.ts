@@ -52,7 +52,8 @@ export class AdministradorComponent implements OnInit {
 
   registroUsuario(event){
     event.preventDefault();
-    this.userService.registroUsuario(this.usuarioDatos).subscribe(
+    console.log(this.recuperarToken);
+    this.userService.registroUsuario(this.usuarioDatos,this.recuperarToken).subscribe(
       response=>{
         if (response == 1) {
           swal.fire('Informacion !!', 'Registro Existoso', 'success');

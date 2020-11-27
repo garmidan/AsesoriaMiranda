@@ -8,8 +8,6 @@ import java.nio.file.Paths;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 
 import org.apache.commons.io.FileUtils;
@@ -26,13 +24,13 @@ import org.springframework.batch.core.configuration.annotation.JobBuilderFactory
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -40,18 +38,29 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
+
 import com.AsesoriaContableBackend.demo.clases.Cliente;
 import com.AsesoriaContableBackend.demo.clases.Inicio;
+import com.AsesoriaContableBackend.demo.dao.MarcaDao;
+import com.AsesoriaContableBackend.demo.dao.MovimientoDao;
+import com.AsesoriaContableBackend.demo.dao.ProductoDao;
 import com.AsesoriaContableBackend.demo.dao.RolDao;
+import com.AsesoriaContableBackend.demo.dao.TipoDao;
+import com.AsesoriaContableBackend.demo.dao.TipoMovimientoDao;
 import com.AsesoriaContableBackend.demo.dao.UsuarioDao;
 import com.AsesoriaContableBackend.demo.email.EmailServiceImpl;
+import com.AsesoriaContableBackend.demo.entity.MarcaEntity;
+import com.AsesoriaContableBackend.demo.entity.MovimientoEntity;
+import com.AsesoriaContableBackend.demo.entity.ProductoEntity;
 import com.AsesoriaContableBackend.demo.entity.RolEntity;
+import com.AsesoriaContableBackend.demo.entity.TipoEntity;
+import com.AsesoriaContableBackend.demo.entity.TipoMovimientoEntity;
 import com.AsesoriaContableBackend.demo.entity.UsuarioEntity;
-import com.AsesoriaContableBackend.demo.security.JWTAuthorizationFilter;
+import com.AsesoriaContableBackend.demo.manejoerrores.ActorNotFoundException;
 import com.AsesoriaContableBackend.demo.step.Procesor;
 import com.AsesoriaContableBackend.demo.step.Reader;
 import com.AsesoriaContableBackend.demo.step.Writer;
@@ -72,9 +81,23 @@ public class ControllerUsuario {
 	RolDao rolDao;
 	
 	@Autowired
+	TipoMovimientoDao tipoMovimientoDao;
+	
+	@Autowired
+	MovimientoDao movimientoDao;
+	
+	@Autowired
+	ProductoDao productoDao;
+	
+	@Autowired
+	TipoDao tipoDao;
+	
+	@Autowired
+	MarcaDao marcaDao;
+	
+	@Autowired
 	JobLauncher jobLauncher;
-	
-	
+		
 	private String archivoFile = "";
 	
 	private int salida = 0;
@@ -115,6 +138,11 @@ public class ControllerUsuario {
 		return new ResponseEntity<List<UsuarioEntity>>(usuarioDao.findAll(), HttpStatus.OK);
 	}
 
+	@GetMapping("accessDenied")
+	public ResponseEntity<String> accessDenied(){
+		String mensaje = "Acceso denegado";
+		return new ResponseEntity<String>(mensaje, HttpStatus.OK);
+	}
 
 	@PostMapping("register")
 	public int registerUsuario(@RequestBody UsuarioEntity usuario) {
@@ -178,14 +206,15 @@ public class ControllerUsuario {
 	
 	@GetMapping("cambiocontraseña/{contraseña}/{recupcontraseña}/{idusuario}")
 	public void cambiarContraseña(@PathVariable String contraseña, @PathVariable Long recupcontraseña,
-			@PathVariable Long idusuario) {
+			@PathVariable Long idusuario){
 		try {
 			String contraseñaEncriptada = encoder.encode(contraseña);
 			usuarioDao.editContraseña(contraseñaEncriptada, recupcontraseña, idusuario);
-		} catch (Exception e) {
-			System.out.println(e);
-		}
-
+	    } catch (ActorNotFoundException ex) {
+	    	 throw new ResponseStatusException(
+	    	          HttpStatus.NOT_FOUND, "Actor Not Found", ex);
+	    }
+		
 	}
 	
 	@PostMapping("importArchivo")
@@ -300,6 +329,11 @@ public class ControllerUsuario {
 	
 	}
 
+	@GetMapping("datosUsuario")
+	public ResponseEntity<UsuarioEntity> datosUsuario(){
+		return new ResponseEntity<UsuarioEntity>(recuperDatos, HttpStatus.OK);
+	}
+	
 	private String getJWTToken(String username) {
 		String secretKey = "1234";
 		List<GrantedAuthority> grantedAuthorities = AuthorityUtils
@@ -327,6 +361,61 @@ public class ControllerUsuario {
 		jsonObject.put("token", recuperarToken);
 		return ResponseEntity.ok()
 			      .body(jsonObject.toString());
+	}
+	
+	@GetMapping("gettipomovimiento")
+	public ResponseEntity<List<TipoMovimientoEntity>> getTipoMovimiento(){
+		return new ResponseEntity<List<TipoMovimientoEntity>>(tipoMovimientoDao.findAll(), HttpStatus.OK);
+	}
+	
+	//Parte de registro movimientos
+	
+	@PostMapping("registermovimientoentrada")
+	public int registerproductoentrada(@RequestBody MovimientoEntity movimientoEntity){
+		int salida = 0;
+		try {
+			ProductoEntity validarCodigoUnico = productoDao.obtenerProducto(movimientoEntity.getProducto().getCodigo());
+			if (validarCodigoUnico == null || validarCodigoUnico.getIdproducto() <=0) {
+				productoDao.save(movimientoEntity.getProducto());
+				ProductoEntity obtenerProducto = productoDao.obtenerProducto(movimientoEntity.getProducto().getCodigo());
+				movimientoEntity.setProducto(obtenerProducto);
+				movimientoDao.save(movimientoEntity);
+				salida = 1;
+			} else {
+				validarCodigoUnico.setCantidad(movimientoEntity.getProducto().getCantidad());
+				salida = 1;
+			}
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		return salida;
+	}
+	
+	@GetMapping("getproductos")
+	public ResponseEntity<List<ProductoEntity>> getproductos(){
+		return new ResponseEntity<List<ProductoEntity>>(productoDao.findAll(), HttpStatus.OK);
+	}
+	
+	@GetMapping("getmovimientos") 
+	public ResponseEntity<List<MovimientoEntity>> getmovimientos(){
+		return new ResponseEntity<List<MovimientoEntity>>(movimientoDao.findAll(), HttpStatus.OK);
+	}
+	
+	@GetMapping("getMovimientosEntrada/{idtipomovimiento}")
+	public ResponseEntity<List<MovimientoEntity>> getMovimientosEntrada(@PathVariable Long idtipomovimiento){
+		Long idTipMovimiento = idtipomovimiento;
+		return new ResponseEntity<List<MovimientoEntity>>(movimientoDao.listaId(idTipMovimiento), HttpStatus.OK);
+	}
+
+	@GetMapping("gettipo") 
+	public ResponseEntity<List<TipoEntity>> gettipo(){
+		return new ResponseEntity<List<TipoEntity>>(tipoDao.findAll(), HttpStatus.OK);
+	}
+	
+	@GetMapping("getmarca") 
+	public ResponseEntity<List<MarcaEntity>> getmarca(){
+		return new ResponseEntity<List<MarcaEntity>>(marcaDao.findAll(), HttpStatus.OK);
 	}
 	
 }

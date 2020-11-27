@@ -19,6 +19,7 @@ export class LoginComponent implements OnInit {
   correoOusuario: string = "";
   claveCambiar1: string = "";
   claveCambiar2: string = "";
+  recuperarToken:string = "";
   pattern: string = "(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&*+=])(?=\\S+$).{8,}";
   public usuarioLogin: Usuario;
   public datos:Inicio;
@@ -56,8 +57,16 @@ export class LoginComponent implements OnInit {
             if (this.usuarioLogin == null) {
               swal.fire('Informacion !!', 'Asegurese de que los datos sean correctos', 'warning');
             } else {
-              localStorage.setItem("isLoggedIn","true");
-              this.router.navigate([this.usuarioLogin.rol.nombre]);
+              console.log(this.usuarioLogin);
+              if (this.usuarioLogin.recupcontraseña == 1) {
+                $("#usua").hide();
+                $("#cambiocontraseña").show();
+                console.log("Debe cambiar la contraseña");
+              } else {
+                localStorage.setItem('isLoggedIn', "true");
+                this.router.navigate([this.usuarioLogin.rol.nombre]);
+              }
+              
             }
           },
           error => {
@@ -74,32 +83,35 @@ export class LoginComponent implements OnInit {
 
   public cambiarClave(event) {
     event.preventDefault();
-    if (this.claveCambiar1 == null || this.claveCambiar2 == null) {
-      swal.fire('Informacion !!', 'Los campos son obligatorios', 'warning');
-    } else {
-      if (this.claveCambiar1 == this.claveCambiar2) {
-        if (this.claveCambiar1.match(this.pattern)) {
-          this.usuuarioService.cambiarContraseña(this.claveCambiar1, 0, this.usuarioLogin.idusuario).subscribe(
-            response => {
-              swal.fire('Informacion !!', 'Bienvenido se ha cambiado la clave exitosamente', 'success');
-              if (this.usuarioLogin.rol.nombre == "Administrador") {
-                localStorage.setItem('isLoggedIn', "true");
-                this.router.navigate(['administrador']);
+    this.usuuarioService.recuperarToken().subscribe(
+      response => {
+        console.log(response);
+       for (const key in response) {
+         if (Object.prototype.hasOwnProperty.call(response, key)) {
+           const element = response[key];
+           this.recuperarToken = element;
+           if (this.claveCambiar1 == null || this.claveCambiar2 == null) {
+            swal.fire('Informacion !!', 'Los campos son obligatorios', 'warning');
+          } else {
+            if (this.claveCambiar1 == this.claveCambiar2) {
+              if (this.claveCambiar1.match(this.pattern)) {
+                this.usuuarioService.cambiarContraseña(this.claveCambiar1, 0, this.usuarioLogin.idusuario,this.recuperarToken).subscribe(
+                  response => {
+                    this.router.navigate([this.usuarioLogin.rol.nombre]);
+                  }
+                )
               } else {
-                localStorage.setItem('isLoggedIn', "true");
-                this.router.navigate(['administrado']);
+                swal.fire('Informacion !!', 'La clave debe tener al menos 8 caracteres, Incluir(un numero,una letra mayuscula,una letra miniscula y un simbolo)', 'warning');
               }
-
+      
+            } else {
+              swal.fire('Informacion !!', 'las contraseñas no coinciden', 'warning');
             }
-          )
-        } else {
-          swal.fire('Informacion !!', 'La clave debe tener al menos 8 caracteres, Incluir(un numero,una letra mayuscula,una letra miniscula y un simbolo)', 'warning');
-        }
-
-      } else {
-        swal.fire('Informacion !!', 'las contraseñas no coinciden', 'warning');
+          }
+         }
+       }
       }
-    }
+    ); 
   }
 
   public recuperarClave(event) {
