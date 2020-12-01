@@ -2,8 +2,15 @@
   "ExpandedNodes": [
     "",
     "\\src",
-    "\\src\\app"
+    "\\src\\app",
+    "\\src\\app\\templates",
+    "\\src\\app\\templates\\administrador",
+    "\\src\\app\\templates\\administrador\\ventas",
+    "\\src\\assets",
+    "\\src\\assets\\Bootstrap\\css",
+    "\\src\\assets\\js",
+    "\\src\\assets\\vendor"
   ],
-  "SelectedNode": "\\src\\app\\app.module.ts",
+  "SelectedNode": "\\src\\app\\templates\\administrador\\ventas\\ventas.component.html",
   "PreviewInSolutionExplorer": false
 }

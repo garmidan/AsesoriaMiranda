@@ -15,6 +15,7 @@ import { LateralComponent } from './templates/administrador/lateral/lateral.comp
 import { ProductoComponent } from './templates/producto/producto.component';
 import { ServiciosComponent } from './templates/administrador/servicios/servicios.component';
 import { VentasComponent } from './templates/administrador/ventas/ventas.component';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @NgModule({
   declarations: [
@@ -36,7 +37,8 @@ import { VentasComponent } from './templates/administrador/ventas/ventas.compone
     AppRoutingModule,
     HttpClientModule,
     ReactiveFormsModule,
-    FormsModule
+    FormsModule,
+    FontAwesomeModule
   ],
   providers: [],
   bootstrap: [AppComponent]
