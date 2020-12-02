@@ -27,12 +27,13 @@ export class VentasComponent implements OnInit {
   tipoMovimiento: TipoMovimiento = new TipoMovimiento(0, "", "");
   marca: Marca = new Marca(0, "");
   seleccionmovimimiento: number = 0;
-  cantidad:any;
+  cantidad:number;
+  suma:number = 0;
   tipo: Tipo = new Tipo(0, "");
   producto: Producto = new Producto(0, 0, "", "", this.marca, this.tipo)
   productSeleccionado: Movimiento = new Movimiento(0, 0, new Date, 0, "N/A", "",
     this.producto, this.userDatos, this.tipoMovimiento);
-  listaPorductosSeleccionados:Movimiento[];
+  listaPorductosSeleccionados:Movimiento[] = [];
   constructor(private router: Router, private userService: UsuarioService) { }
 
   ngOnInit(): void {
@@ -65,7 +66,7 @@ export class VentasComponent implements OnInit {
   }
 
   getMovimientosEntrada(){
-    this.userService.getMovimientosEntrada(this.recuperarToken,3).subscribe(
+    this.userService.getmovimiento(this.recuperarToken).subscribe(
       response=>{
         this.datosMovimientos = response;
         console.log(this.datosMovimientos);
@@ -80,9 +81,51 @@ export class VentasComponent implements OnInit {
 
   cantidadSeleccionada(){
     this.cantidad = $('#cantidad').val();
-    $('#productosseleccionados').show('slide');
-    this.productSeleccionado.cantidad = this.cantidad;
-    this.listaPorductosSeleccionados.push(this.productSeleccionado);
-    console.log(this.cantidad);
+    if (this.cantidad > this.productSeleccionado.producto.cantidad) {
+      swal.fire('Informacion !!', 'La cantidad solicitada no esta disponible!', 'warning');
+    } else {
+      var validar = 0;
+      $('#productosseleccionados').show('slide');
+      if (this.listaPorductosSeleccionados.length >=1) {
+        this.listaPorductosSeleccionados.forEach(element => {
+          if (this.productSeleccionado.idmovimiento === element.idmovimiento) {
+            this.suma = Number(element.cantidad) + Number(this.cantidad);
+            if (this.suma < this.productSeleccionado.producto.cantidad) {
+              element.cantidad = this.suma;
+            } else {
+              swal.fire('Informacion !!', 'La cantidad solicitada no esta disponible!', 'warning');
+            }
+            validar = 1;
+          } 
+        });
+        if (validar == 0) {
+          validar = 1;
+          this.productSeleccionado.cantidad = this.cantidad;
+          this.productSeleccionado.preciosalida = this.productSeleccionado.precioentrada;
+          this.productSeleccionado.observacion= "Venta de producto";
+          this.listaPorductosSeleccionados.push(this.productSeleccionado);
+          this.cantidad = 0;
+        } 
+      } else {
+        this.productSeleccionado.preciosalida = this.productSeleccionado.precioentrada;
+        this.productSeleccionado.cantidad = this.cantidad;
+        this.productSeleccionado.observacion= "Venta de producto";
+        this.listaPorductosSeleccionados.push(this.productSeleccionado);
+        this.cantidad = 0;
+      }
+    }
+  }
+
+  finalizar(){
+    this.userService.registermovimientosalida(this.listaPorductosSeleccionados,this.recuperarToken).subscribe(
+      response=>{
+        if (response >=1) {
+          swal.fire('Informacion !!', 'Se finalizo correctamente!', 'success');
+          console.log(this.listaPorductosSeleccionados);
+        } else {
+          swal.fire('Informacion !!', 'Problemas al finalizar el proceso!', 'warning');
+        }
+      });
+    
   }
 }

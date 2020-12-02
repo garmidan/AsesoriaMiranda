@@ -149,4 +149,13 @@ export class UsuarioService {
     });
     return this.http.get(this.url + 'getMovimientosEntrada'+'/'+idtipomovimiento,{ headers: headers });
   }
+
+  registermovimientosalida(movimientLista:Movimiento[] = [],token:string):Observable<any>{
+    let params = JSON.stringify(movimientLista);
+    let headers = new HttpHeaders({
+      "Content-Type": "application/json",
+      "Authorization":token
+    });
+    return this.http.post(this.url+'registrosMovimientosSalida', params, {headers: headers});
+  }
 }

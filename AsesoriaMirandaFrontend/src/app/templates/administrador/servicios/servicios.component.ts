@@ -146,6 +146,25 @@ export class ServiciosComponent implements OnInit {
     )
   }
 
+  nuevaMarcaYoTipo(){
+    console.log(this.registrarmovimiento.producto.tipo.idtipo);
+    console.log(this.registrarmovimiento.producto.marca.idmarca);
+    if (this.registrarmovimiento.producto.tipo.idtipo == 7089078790676) {
+        $("#tip").show();
+        $("#tipi").hide();
+        if (this.registrarmovimiento.producto.marca.idmarca == 7089078790676) {
+          $("#mar").show();
+          $("#marcas").hide();
+        }
+    } else {
+      if (this.registrarmovimiento.producto.marca.idmarca == 7089078790676) {
+        $("#mar").show();
+        $("#marcas").hide();
+      }
+    }
+   
+  }
+
   registermovimientoentrada(event) {
     event.preventDefault();
     this.registrarmovimiento.tipomovimiento.idtipomovimiento = this.seleccionmovimimiento;

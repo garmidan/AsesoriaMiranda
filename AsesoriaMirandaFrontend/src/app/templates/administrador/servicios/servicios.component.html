@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 <style>
   #accordionSidebar {
     transition: 1s;
@@ -357,6 +358,102 @@
                   </footer>
                   <!-- End of Footer -->
 
+=======
+<div class="row">
+  <app-lateral></app-lateral>
+  <div class="col-9">
+    <div class="btn-group" role="group" aria-label="Basic example" *ngFor="let datmovimiento of datosTipoMovimiento">
+      <button *ngIf="datmovimiento.tipo =='Entrada'" type="button" data-toggle="modal" data-target="#comprar" (click)="servicio(datmovimiento.tipo, datmovimiento.idtipomovimiento)"
+        class="btn btn-info">Nuevo Producto</button>
+    </div>
+    <br />
+    <br />
+    <h1 style="text-align: center;">Entrada y Salida de productos</h1>
+    <div id="table">
+      <table class="table table-striped" id="tableServicios">
+        <thead>
+          <tr>
+            <th scope="col">Tipo</th>
+            <th scope="col">Marca</th>
+            <th scope="col">Precio Entrada</th>
+            <th scope="col">Precio Salida</th>
+            <th scope="col">Cant</th>
+            <th scope="col">Fecha Registro</th>
+            <th scope="col">Descripcion Pro</th>
+            <th scope="col">Observacion</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let datmovimientos of  datosMovimientos">
+            <th scope="row">{{datmovimientos.producto.tipo.nombre}}</th>
+            <td>{{datmovimientos.producto.marca.nombre}}</td>
+            <td>{{datmovimientos.precioentrada}}</td>
+            <td>{{datmovimientos.preciosalida}}</td>
+            <td>{{datmovimientos.cantidad}}</td>
+            <td>{{datmovimientos.fecha}}</td>
+            <td>{{datmovimientos.producto.descripcion}}</td>
+            <td>{{datmovimientos.observacion}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <form #projectForm="ngForm" (ngSubmit)="registermovimientoentrada($event)">
+      <div class="modal fade" id="comprar" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Digite los datos solicitados</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div class="form-row">
+                <div class="form-group col-md-6" id="tipi">
+                  <label for="tipo">Tipo</label>
+                  <select name="tipo"  #tipo="ngModel" [(ngModel)]="registrarmovimiento.producto.tipo.idtipo" (change)="nuevaMarcaYoTipo()" id="tipo"
+                    class="form-control">
+                    <option selected>.</option>
+                    <option *ngFor="let tipo of datosTipo" value="{{tipo.idtipo}}">{{tipo.nombre}}</option>
+                    <option value="7089078790676">Nuevo Tipo</option>
+                  </select>
+                </div>
+                <div class="form-group col-md-6" style="display: none;" id="tip">
+                  <label for="codigo">Tipo</label>
+                  <input name="tip" #tip="ngModel" [(ngModel)]="registrarmovimiento.producto.tipo.nombre" type="text"
+                    class="form-control" id="tip">
+                </div>
+                <div class="form-group col-md-6" id="marcas">
+                  <label for="marca">Marca</label>
+                  <select name="marca" #marca="ngModel" [(ngModel)]="registrarmovimiento.producto.marca.idmarca"
+                    id="marca" (change)="nuevaMarcaYoTipo()"  class="form-control">
+                    <option selected>.</option>
+                    <option *ngFor="let marca of datosMarca" value="{{marca.idmarca}}">{{marca.nombre}}</option>
+                    <option value="7089078790676">Nueva Marca</option>
+                  </select>
+                </div>
+                <div class="form-group col-md-6" style="display: none;" id="mar">
+                  <label for="codigo">Marca</label>
+                  <input name="mar" #mar="ngModel" [(ngModel)]="registrarmovimiento.producto.marca.nombre" type="text"
+                    class="form-control" id="mar">
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group col-md-4">
+                  <label for="codigo">Codigo</label>
+                  <input name="codigo" #codigo="ngModel" [(ngModel)]="registrarmovimiento.producto.codigo" type="text"
+                    class="form-control" id="codigo">
+                </div>
+                <div class="form-group col-md-4">
+                  <label for="cantidad">Cantidad</label>
+                  <input name="cantidad" #cantidad="ngModel" [(ngModel)]="registrarmovimiento.producto.cantidad"
+                    type="text" class="form-control" id="cantidad">
+                </div>
+                <div class="form-group col-md-4">
+                  <label for="precio">Precio</label>
+                  <input name="precio" #precio="ngModel" [(ngModel)]="registrarmovimiento.precioentrada" type="number"
+                    class="form-control" id="precio">
+>>>>>>> Stashed changes
                 </div>
                 <!-- End of Content Wrapper -->
 

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -192,7 +193,7 @@ public class ControllerUsuario {
 				String nuevaClave = "" + (int) (Math.random() * 1000000);
 				EmailServiceImpl emailService = new EmailServiceImpl();
 				emailService.sendClaves(usuarioRecupContraseña.getCorreo(), usuarioRecupContraseña.getNombres(),
-						"garmidan16@gmail.com", nuevaClave);
+						usuarioRecupContraseña.getCorreo(), nuevaClave);
 				String contraseñaEncriptadaRecuperar = encoder.encode(nuevaClave);
 				usuarioDao.editContraseña(contraseñaEncriptadaRecuperar, Long.valueOf(1),
 						usuarioRecupContraseña.getIdusuario());
@@ -374,6 +375,35 @@ public class ControllerUsuario {
 	public int registerproductoentrada(@RequestBody MovimientoEntity movimientoEntity){
 		int salida = 0;
 		try {
+			MarcaEntity mar = new MarcaEntity();
+			TipoEntity tip = new TipoEntity();
+			if (movimientoEntity.getProducto().getMarca().getNombre() != "") {
+				mar.setIdmarca(Long.valueOf(0));
+				mar.setNombre(movimientoEntity.getProducto().getMarca().getNombre());
+				marcaDao.save(mar);
+			}
+			if (movimientoEntity.getProducto().getTipo().getNombre() != "") {
+				tip.setIdtipo(Long.valueOf(0));
+				tip.setNombre(movimientoEntity.getProducto().getTipo().getNombre());
+				tipoDao.save(tip);
+			}
+			ProductoEntity pro = new ProductoEntity();
+			pro.setCantidad(movimientoEntity.getProducto().getCantidad());
+			pro.setCodigo(movimientoEntity.getProducto().getCodigo());
+			pro.setDescripcion(movimientoEntity.getProducto().getDescripcion());
+			pro.setIdproducto(movimientoEntity.getProducto().getIdproducto());
+			pro.setTipo(movimientoEntity.getProducto().getTipo());
+			pro.setMarca(movimientoEntity.getProducto().getMarca());
+			if (mar.getNombre() != "" && mar.getNombre() != null) {
+				mar = marcaDao.ultimo();
+				pro.setMarca(mar);
+				
+			}
+			if (tip.getNombre() != "" && tip.getNombre() != null) {
+				tip = tipoDao.ultimo();
+				pro.setTipo(tip);
+			}
+			movimientoEntity.setProducto(pro);
 			ProductoEntity validarCodigoUnico = productoDao.obtenerProducto(movimientoEntity.getProducto().getCodigo());
 			if (validarCodigoUnico == null || validarCodigoUnico.getIdproducto() <=0) {
 				productoDao.save(movimientoEntity.getProducto());
@@ -382,12 +412,29 @@ public class ControllerUsuario {
 				movimientoDao.save(movimientoEntity);
 				salida = 1;
 			} else {
-				validarCodigoUnico.setCantidad(movimientoEntity.getProducto().getCantidad());
+				Long sumaCant = validarCodigoUnico.getCantidad() + movimientoEntity.getCantidad();
+				movimientoEntity.setProducto(validarCodigoUnico);
+				productoDao.editCantidad(String.valueOf(sumaCant), validarCodigoUnico.getIdproducto());
+				movimientoDao.save(movimientoEntity);
 				salida = 1;
 			}
 			
 		} catch (Exception e) {
 			// TODO: handle exception
+		}
+		return salida;
+	}
+	
+	@PostMapping("registrosMovimientosSalida")
+	public int registrosMovimientosSalida(@RequestBody List<MovimientoEntity> listMovimientos) {
+		int salida = 0;
+		for (MovimientoEntity movimientoEntity : listMovimientos) {
+			TipoMovimientoEntity tipoMovimientoEntity = new TipoMovimientoEntity();
+			tipoMovimientoEntity.setIdtipomovimiento(Long.valueOf(4));
+			movimientoEntity.setIdmovimiento(Long.valueOf(0));
+			movimientoEntity.setTipomovimiento(tipoMovimientoEntity);
+			movimientoDao.save(movimientoEntity);
+			salida = 1;
 		}
 		return salida;
 	}
@@ -403,9 +450,13 @@ public class ControllerUsuario {
 	}
 	
 	@GetMapping("getMovimientosEntrada/{idtipomovimiento}")
-	public ResponseEntity<List<MovimientoEntity>> getMovimientosEntrada(@PathVariable Long idtipomovimiento){
+	public List<MovimientoEntity> getMovimientosEntrada(@PathVariable Long idtipomovimiento){
+		List<MovimientoEntity> listaMov = new ArrayList<MovimientoEntity>();
 		Long idTipMovimiento = idtipomovimiento;
-		return new ResponseEntity<List<MovimientoEntity>>(movimientoDao.listaId(idTipMovimiento), HttpStatus.OK);
+		List<MovimientoEntity> duplicates = movimientoDao.listaId(idTipMovimiento);
+		
+		System.out.println("Cantidad de productos son = "+listaMov.size());
+		return duplicates;
 	}
 
 	@GetMapping("gettipo") 
