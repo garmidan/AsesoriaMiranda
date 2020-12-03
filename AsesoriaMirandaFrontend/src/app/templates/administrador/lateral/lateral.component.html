@@ -1,11 +1,138 @@
+    <!-- Sidebar -->
+  <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
-    <div class="col-3">
-      <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-        <a class="nav-link" id="v-pills-home-tab"  href="/Administrador" role="tab" aria-controls="v-pills-home" aria-selected="true">Usuarios</a>
-        <a class="nav-link" id="v-pills-profile-tab"  href="/cliente" role="tab" aria-controls="v-pills-profile" aria-selected="false">Clientes</a>
-        <a class="nav-link" id="v-pills-messages-tab"  href="/servicios" role="tab" aria-controls="v-pills-messages" aria-selected="false">Productos</a>
-        <a class="nav-link" id="v-pills-settings-tab"  href="/ventas" role="tab" aria-controls="v-pills-settings" aria-selected="false">Ventas</a>
+    <!-- Sidebar - Brand -->
+    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+      <div class="sidebar-brand-icon">
+        <img src="" alt="Asesoria" width="100px" height="50px">
       </div>
+
+    </a>
+
+    <!-- Divider -->
+    <hr class="sidebar-divider my-0">
+
+    <!-- Nav Item - Dashboard -->
+    <li class="nav-item active">
+      <a class="nav-link" href="?c=Empleado&a=admin">
+        <i class="fas fa-fw fa-home"></i>
+        <span>Inicio</span>
+      </a>
+    </li>
+
+    <!-- Divider -->
+    <hr class="sidebar-divider">
+
+    <!-- Heading -->
+    <!-- Nav Item - Pages Collapse Menu -->
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
+         aria-expanded="true" aria-controls="collapseTwo">
+        <i class="fas fa-user"></i>
+        <span>Usuario</span>
+      </a>
+      <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+        <div class="bg-white py-2 collapse-inner rounded">
+          <h6 class="collapse-header">Acciones de Usuario</h6>
+          <a class="collapse-item" href="/Administrador">Crear Usuario</a>
+
+        </div>
+      </div>
+    </li>
+    <!-- Heading -->
+    <!-- Nav Item - Pages Collapse Menu -->
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse3"
+         aria-expanded="true" aria-controls="collapseTwo">
+        <i class="fas fa-users"></i>
+        <span>Clientes</span>
+      </a>
+      <div id="collapse3" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+        <div class="bg-white py-2 collapse-inner rounded">
+          <h6 class="collapse-header">Acciones de Clientes</h6>
+          <a class="collapse-item" href="/cliente">Importar Clientes</a>
+
+        </div>
+      </div>
+    </li>
+
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse4"
+         aria-expanded="true" aria-controls="collapseTwo">
+        <i class="fas fa-users"></i>
+        <span>Productos</span>
+      </a>
+      <div id="collapse4" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+        <div class="bg-white py-2 collapse-inner rounded">
+          <h6 class="collapse-header">Acciones de Productos</h6>
+          <a class="collapse-item" href="/servicios">Gestionar Productos</a>
+
+        </div>
+      </div>
+    </li>
+
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse5"
+         aria-expanded="true" aria-controls="collapseTwo">
+        <i class="fas fa-users"></i>
+        <span>Ventas</span>
+      </a>
+      <div id="collapse5" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+        <div class="bg-white py-2 collapse-inner rounded">
+          <h6 class="collapse-header">Acciones de Productos</h6>
+          <a class="collapse-item" href="/ventas">Gestionar Ventas</a>
+
+        </div>
+      </div>
+    </li>
+    <!-- Divider -->
+    <hr class="sidebar-divider">
+
+    <!-- Heading -->
+    <div class="sidebar-heading">
+      Redes sociales
     </div>
+
+    <!-- Nav Item - Pages Collapse Menu -->
+    <!-- Nav Item - Charts -->
+    <li class="nav-item">
+      <a class="nav-link" onclick="instagram()">
+        <i class="fab fa-instagram"></i>
+        <span>Instagram</span>
+      </a>
+    </li>
+
+    <!-- Nav Item - Tables -->
+    <li class="nav-item">
+      <a class="nav-link" onclick="facebook()">
+        <i class="fab fa-facebook"></i>
+        <span>Facebook</span>
+      </a>
+    </li>
+
+    <li class="nav-item">
+      <a class="nav-link" onclick="youtube()">
+        <i class="fab fa-youtube"></i>
+        <span>Youtube</span>
+      </a>
+    </li>
+
+    <li class="nav-item">
+      <a class="nav-link" onclick="youtube()">
+        <i class="fab fa-whatsapp"></i>
+        <span>whatsapp</span>
+      </a>
+    </li>
+
+
+    <!-- Divider -->
+    <hr class="sidebar-divider d-none d-md-block">
+
+    <!-- Sidebar Toggler (Sidebar) -->
+    <div class="text-center d-none d-md-inline">
+      <button class="rounded-circle border-0" id="sidebarToggle"></button>
+    </div>
+
+  </ul>
    
  

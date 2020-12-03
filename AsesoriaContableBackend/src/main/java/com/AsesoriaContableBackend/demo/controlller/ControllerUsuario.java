@@ -433,6 +433,8 @@ public class ControllerUsuario {
 			tipoMovimientoEntity.setIdtipomovimiento(Long.valueOf(4));
 			movimientoEntity.setIdmovimiento(Long.valueOf(0));
 			movimientoEntity.setTipomovimiento(tipoMovimientoEntity);
+			Long resta = movimientoEntity.getProducto().getCantidad() - movimientoEntity.getCantidad();
+			productoDao.editCantidad(String.valueOf(resta), movimientoEntity.getProducto().getIdproducto());
 			movimientoDao.save(movimientoEntity);
 			salida = 1;
 		}
@@ -451,12 +453,22 @@ public class ControllerUsuario {
 	
 	@GetMapping("getMovimientosEntrada/{idtipomovimiento}")
 	public List<MovimientoEntity> getMovimientosEntrada(@PathVariable Long idtipomovimiento){
-		List<MovimientoEntity> listaMov = new ArrayList<MovimientoEntity>();
+		List<MovimientoEntity> listaSalida = new ArrayList<MovimientoEntity>();
+		List<MovimientoEntity> listaRep = new ArrayList<MovimientoEntity>();
 		Long idTipMovimiento = idtipomovimiento;
-		List<MovimientoEntity> duplicates = movimientoDao.listaId(idTipMovimiento);
-		
-		System.out.println("Cantidad de productos son = "+listaMov.size());
-		return duplicates;
+		for (MovimientoEntity datos : movimientoDao.listaId(idTipMovimiento)) {
+			if (listaSalida.isEmpty() && listaRep.isEmpty()) {
+				listaRep.add(datos);
+				listaSalida.add(datos);
+			} else {
+				for (MovimientoEntity datos2 : listaRep) {
+					if (!datos2.getProducto().getCodigo().equals(datos.getProducto().getCodigo())) {
+						listaSalida.add(datos);
+					}
+				}
+			}
+		}
+		return listaSalida;
 	}
 
 	@GetMapping("gettipo") 

@@ -66,7 +66,7 @@ export class VentasComponent implements OnInit {
   }
 
   getMovimientosEntrada(){
-    this.userService.getmovimiento(this.recuperarToken).subscribe(
+    this.userService.getMovimientosEntrada(this.recuperarToken,3).subscribe(
       response=>{
         this.datosMovimientos = response;
         console.log(this.datosMovimientos);
@@ -121,11 +121,13 @@ export class VentasComponent implements OnInit {
       response=>{
         if (response >=1) {
           swal.fire('Informacion !!', 'Se finalizo correctamente!', 'success');
-          console.log(this.listaPorductosSeleccionados);
+          this.getMovimientosEntrada();
+          $("#productosseleccionados").hide();
         } else {
           swal.fire('Informacion !!', 'Problemas al finalizar el proceso!', 'warning');
         }
       });
-    
   }
+
+
 }

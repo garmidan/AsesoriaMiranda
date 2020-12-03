@@ -46,7 +46,6 @@ export class ServiciosComponent implements OnInit {
       });
     }, 200);
     this.idiomadatables();
-    
   }
 
   datables(){
@@ -196,5 +195,4 @@ export class ServiciosComponent implements OnInit {
       }
     )
   }
-
 }

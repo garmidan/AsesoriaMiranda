@@ -57,7 +57,7 @@ export class LoginComponent implements OnInit {
             if (this.usuarioLogin == null) {
               swal.fire('Informacion !!', 'Asegurese de que los datos sean correctos', 'warning');
             } else {
-              console.log(this.usuarioLogin);
+             
               if (this.usuarioLogin.recupcontraseña == 1) {
                 $("#usua").hide();
                 $("#cambiocontraseña").show();
