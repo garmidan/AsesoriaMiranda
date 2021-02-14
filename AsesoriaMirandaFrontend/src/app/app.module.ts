@@ -17,6 +17,7 @@ import { ServiciosComponent } from './templates/administrador/servicios/servicio
 import { VentasComponent } from './templates/administrador/ventas/ventas.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { NavComponent } from './templates/administrador/nav/nav.component';
+import { ActualizarComponent } from './templates/administrador/actualizar/actualizar.component';
 
 @NgModule({
   declarations: [
@@ -33,6 +34,7 @@ import { NavComponent } from './templates/administrador/nav/nav.component';
     ServiciosComponent,
     VentasComponent,
     NavComponent,
+    ActualizarComponent,
   ],
   imports: [
     BrowserModule,

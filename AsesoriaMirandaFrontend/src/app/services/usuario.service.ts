@@ -158,4 +158,11 @@ export class UsuarioService {
     });
     return this.http.post(this.url+'registrosMovimientosSalida', params, {headers: headers});
   }
+
+  validarCodigoExistente(token:string, codigo:string):Observable<any>{
+    let headers = new HttpHeaders({
+      "Authorization":token
+    });
+    return this.http.get(this.url + 'validarCodigoExistente/'+codigo,{ headers: headers });
+  }
 }

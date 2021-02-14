@@ -7,6 +7,7 @@ import { AdministradorComponent } from './templates/administrador/administrador.
 import { ClienteComponent } from './templates/administrador/cliente/cliente.component';
 import { ServiciosComponent } from './templates/administrador/servicios/servicios.component';
 import { VentasComponent } from './templates/administrador/ventas/ventas.component';
+import { ActualizarComponent } from './templates/administrador/actualizar/actualizar.component';
 
 
 
@@ -19,6 +20,7 @@ const routes: Routes = [
   {path: 'cliente', component:ClienteComponent},
   {path: 'servicios', component:ServiciosComponent},
   {path: 'ventas', component:VentasComponent},
+  {path: 'actualizar', component:ActualizarComponent},
 ];
 
 @NgModule({

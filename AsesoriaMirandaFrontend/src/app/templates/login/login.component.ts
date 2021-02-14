@@ -54,10 +54,9 @@ export class LoginComponent implements OnInit {
         this.usuuarioService.login(this.datos).subscribe(
           response => {
             this.usuarioLogin = response;
-            if (this.usuarioLogin == null) {
+            if (this.usuarioLogin.nombres === null) {
               swal.fire('Informacion !!', 'Asegurese de que los datos sean correctos', 'warning');
             } else {
-             
               if (this.usuarioLogin.recupcontraseña == 1) {
                 $("#usua").hide();
                 $("#cambiocontraseña").show();

@@ -15,9 +15,11 @@ declare var $: any;
 export class AdministradorComponent implements OnInit {
   rol:Rol = new Rol(0,"");
   usuarioDatos:Usuario = new Usuario(0,"","","","","","","","",0,this.rol);
+  informacionUsuario:Usuario = new Usuario(0,"","","","","","","","",0,this.rol);
   listaRol:Rol[];
   datosUser:Usuario = new Usuario(0,"","","","","","","","",0,this.rol);
   recuperarToken:string = "";
+  nombreUser:string = "";
   constructor(private router: Router, private userService:UsuarioService) { }
 
   ngOnInit(): void {
@@ -49,6 +51,8 @@ export class AdministradorComponent implements OnInit {
       }
        );
   }
+
+  
 
   registroUsuario(event){
     event.preventDefault();

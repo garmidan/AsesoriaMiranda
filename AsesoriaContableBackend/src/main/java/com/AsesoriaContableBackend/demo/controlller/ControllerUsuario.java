@@ -310,7 +310,6 @@ public class ControllerUsuario {
 	@PostMapping("login")
 	public ResponseEntity<UsuarioEntity> login(@RequestBody Inicio sesion) {
 		UsuarioEntity userLog = usuarioDao.login(sesion.getUsername(), sesion.getUsername());
-		
 		HttpHeaders responseHeaders = new HttpHeaders();
 		if (userLog != null) {
 			if (encoder.matches(sesion.getClave(), userLog.getClave())) {
@@ -479,6 +478,12 @@ public class ControllerUsuario {
 	@GetMapping("getmarca") 
 	public ResponseEntity<List<MarcaEntity>> getmarca(){
 		return new ResponseEntity<List<MarcaEntity>>(marcaDao.findAll(), HttpStatus.OK);
+	}
+	
+	@GetMapping("validarCodigoExistente/{codigo}")
+	public ResponseEntity<ProductoEntity> validarCodigoExistente(@PathVariable String codigo){
+		ProductoEntity datos = productoDao.obtenerProducto(codigo);
+		return new ResponseEntity<ProductoEntity>(datos, HttpStatus.OK);
 	}
 	
 }

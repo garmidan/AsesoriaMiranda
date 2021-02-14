@@ -90,6 +90,14 @@
                             </div>
                             <div class="modal-body">
                               <div class="form-row">
+                                <div class="form-group col-md-12">
+                                  <label for="codigo">Codigo</label>
+                                  <input name="codigo" #codigo="ngModel"
+                                    [(ngModel)]="registrarmovimiento.producto.codigo" (keyup)="validarCodigo()" type="text" class="form-control"
+                                    id="codigo">
+                                </div>
+                              </div>
+                              <div class="form-row">
                                 <div class="form-group col-md-6" id="tipi">
                                   <label for="tipo">Tipo</label>
                                   <select name="tipo" #tipo="ngModel"
@@ -124,12 +132,6 @@
                                 </div>
                               </div>
                               <div class="form-row">
-                                <div class="form-group col-md-4">
-                                  <label for="codigo">Codigo</label>
-                                  <input name="codigo" #codigo="ngModel"
-                                    [(ngModel)]="registrarmovimiento.producto.codigo" type="text" class="form-control"
-                                    id="codigo">
-                                </div>
                                 <div class="form-group col-md-4">
                                   <label for="cantidad">Cantidad</label>
                                   <input name="cantidad" #cantidad="ngModel"

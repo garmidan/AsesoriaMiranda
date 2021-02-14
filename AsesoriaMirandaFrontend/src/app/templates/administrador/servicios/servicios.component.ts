@@ -23,8 +23,10 @@ export class ServiciosComponent implements OnInit {
   datosMovimientos: Movimiento[];
   tipoMovimiento: TipoMovimiento = new TipoMovimiento(0, "", "");
   datosMarca: Marca[];
+  
   datosProductos:Producto[];
   datosTipo: Tipo[];
+  codigo:string = "";
   rol: Rol = new Rol(0, "");
   userDatos: Usuario = new Usuario(0, "", "", "", "", "", "", "", "", 0, this.rol);
   recuperarToken: string = "";
@@ -32,6 +34,7 @@ export class ServiciosComponent implements OnInit {
   seleccionmovimimiento: number = 0;
   tipo: Tipo = new Tipo(0, "");
   producto: Producto = new Producto(0, 0, "", "", this.marca, this.tipo)
+  datosValidarCodigo:Producto = new Producto(0, 0, "", "", this.marca, this.tipo)
   registrarmovimiento: Movimiento = new Movimiento(0, 0, new Date, 0, "N/A", "",
     this.producto, this.userDatos, this.tipoMovimiento);
   constructor(private router: Router, private userService: UsuarioService) { }
@@ -192,6 +195,20 @@ export class ServiciosComponent implements OnInit {
     this.userService.getproductos(this.recuperarToken).subscribe(
       response=>{
         this.datosProductos = response;
+      }
+    )
+  }
+
+  validarCodigo(){
+    this.codigo = $("#codigo").val();
+    this.userService.validarCodigoExistente(this.recuperarToken,this.codigo).subscribe(
+      response=>{
+        if (response!= null) {
+          this.datosValidarCodigo = response;
+          console.log(this.datosValidarCodigo);
+        }else{
+          console.log("No existe");
+        }
       }
     )
   }
