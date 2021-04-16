@@ -21,8 +21,8 @@ public class MunicipioEntity {
 	@Column(name = "idmunicipio", precision = 11)
 	private Long idmunicipio;
 	
-	@Column(name = "nombremunicipio")
-	private String nombremunicipio;
+	@Column(name = "municipio")
+	private String municipio;
 	
 	@Column(name = "codigopostal")
 	private String codigopostal;
@@ -35,9 +35,9 @@ public class MunicipioEntity {
 	public MunicipioEntity() {
 	}
 
-	public MunicipioEntity(Long idmunicipio, String nombremunicipio, String codigopostal, DepartamentoEntity departamento) {
+	public MunicipioEntity(Long idmunicipio, String municipio, String codigopostal, DepartamentoEntity departamento) {
 		this.idmunicipio = idmunicipio;
-		this.nombremunicipio = nombremunicipio;
+		this.municipio = municipio;
 		this.codigopostal = codigopostal;
 		this.departamento = departamento;
 	}
@@ -50,12 +50,12 @@ public class MunicipioEntity {
 		this.idmunicipio = idmunicipio;
 	}
 
-	public String getNombreMunicipio() {
-		return nombremunicipio;
+	public String getMunicipio() {
+		return municipio;
 	}
 
-	public void setNombreMunicipio(String nombremunicipio) {
-		this.nombremunicipio = nombremunicipio;
+	public void setMunicipio(String municipio) {
+		this.municipio = municipio;
 	}
 
 	public String getCodigopostal() {
@@ -76,7 +76,7 @@ public class MunicipioEntity {
 
 	@Override
 	public String toString() {
-		return "MunicipioEntity [idmunicipio=" + idmunicipio + ", nombremunicipio=" + nombremunicipio
+		return "MunicipioEntity [idmunicipio=" + idmunicipio + ", nombremunicipio=" + municipio
 				+ ", codigopostal=" + codigopostal + ", departamento=" + departamento + "]";
 	}
 
@@ -87,7 +87,7 @@ public class MunicipioEntity {
 		result = prime * result + ((codigopostal == null) ? 0 : codigopostal.hashCode());
 		result = prime * result + ((departamento == null) ? 0 : departamento.hashCode());
 		result = prime * result + ((idmunicipio == null) ? 0 : idmunicipio.hashCode());
-		result = prime * result + ((nombremunicipio == null) ? 0 : nombremunicipio.hashCode());
+		result = prime * result + ((municipio == null) ? 0 : municipio.hashCode());
 		return result;
 	}
 
@@ -115,10 +115,10 @@ public class MunicipioEntity {
 				return false;
 		} else if (!idmunicipio.equals(other.idmunicipio))
 			return false;
-		if (nombremunicipio == null) {
-			if (other.nombremunicipio != null)
+		if (municipio == null) {
+			if (other.municipio != null)
 				return false;
-		} else if (!nombremunicipio.equals(other.nombremunicipio))
+		} else if (!municipio.equals(other.municipio))
 			return false;
 		return true;
 	}

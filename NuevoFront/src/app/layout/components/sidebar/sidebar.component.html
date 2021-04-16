@@ -1,0 +1,106 @@
+<nav [ngClass]="{ sidebarPushRight: isActive, collapsed: collapsed }" class="sidebar">
+    <div class="list-group">
+
+        <div class="nested-menu" *ngIf="datosUser.rol.nombre == 'Administrador'">
+            <a (click)="addExpandClass('Usuarios')" class="list-group-item">
+                <i class="fa fa-plus"></i>&nbsp;
+                <span>{{ 'Usuarios' | translate }}</span>
+            </a>
+            <li [class.expand]="showMenu === 'Usuarios'" class="nested">
+                <ul class="submenu">
+                    <li>
+                        <a [routerLinkActive]="['router-link-active']" [routerLink]="['/dashboardAdmin']" class="list-group-item">
+                            <i class="fa fa-fw fa-bar-chart-o"></i>&nbsp;
+                            <span>{{ 'Crear Usuario' | translate }}</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        </div>
+        <div class="nested-menu">
+            <a (click)="addExpandClass('Clientes')" class="list-group-item">
+                <i class="fa fa-plus"></i>&nbsp;
+                <span>{{ 'Clientes' | translate }}</span>
+            </a>
+            <li [class.expand]="showMenu === 'Clientes'" class="nested">
+                <ul class="submenu">
+                    <li>
+                        <a [routerLinkActive]="['router-link-active']" [routerLink]="['/Clientes']" class="list-group-item">
+                            <i class="fa fa-fw fa-bar-chart-o"></i>&nbsp;
+                            <span>{{ 'Crear Cliente' | translate }}</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        </div>
+        <div class="nested-menu">
+            <a (click)="addExpandClass('Productos')" class="list-group-item">
+                <i class="fa fa-plus"></i>&nbsp;
+                <span>{{ 'Productos' | translate }}</span>
+            </a>
+            <li [class.expand]="showMenu === 'Productos'" class="nested">
+                <ul class="submenu">
+                    <li>
+                        <a [routerLinkActive]="['router-link-active']" [routerLink]="['/Productos']" class="list-group-item">
+                            <i class="fa fa-fw fa-bar-chart-o"></i>&nbsp;
+                            <span>{{ 'Gestionar Productos' | translate }}</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        </div>
+        <div class="nested-menu">
+            <a (click)="addExpandClass('Ventas')" class="list-group-item">
+                <i class="fa fa-plus"></i>&nbsp;
+                <span>{{ 'Ventas' | translate }}</span>
+            </a>
+            <li [class.expand]="showMenu === 'Ventas'" class="nested">
+                <ul class="submenu">
+                    <li>
+                        <a [routerLinkActive]="['router-link-active']" [routerLink]="['/Ventas']" class="list-group-item">
+                            <i class="fa fa-fw fa-bar-chart-o"></i>&nbsp;
+                            <span>{{ 'Gestionar Ventas' | translate }}</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        </div>
+        <div class="nested-menu">
+            <a (click)="addExpandClass('Facturas')" class="list-group-item">
+                <i class="fa fa-plus"></i>&nbsp;
+                <span>{{ 'Facturas' | translate }}</span>
+            </a>
+            <li [class.expand]="showMenu === 'Facturas'" class="nested">
+                <ul class="submenu">
+                    <li>
+                        <a [routerLinkActive]="['router-link-active']" [routerLink]="['/Facturas']" class="list-group-item">
+                            <i class="fa fa-fw fa-bar-chart-o"></i>&nbsp;
+                            <span>{{ 'Facturas' | translate }}</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        </div>
+        <div class="header-fields">
+            <div class="nested-menu">
+                <a (click)="addExpandClass('profile')" class="list-group-item">
+                    <span><i class="fa fa-user"></i>&nbsp; John Smith</span>
+                </a>
+                <li [class.expand]="showMenu === 'profile'" class="nested">
+                    <ul class="submenu">
+                        <li>
+                            <a (click)="onLoggedout()" [routerLink]="['/login']">
+                                <span><i class="fa fa-fw fa-power-off"></i> {{ 'Log Out' | translate }}</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </div>
+        </div>
+    </div>
+
+    <div (click)="toggleCollapsed()" [ngClass]="{ collapsed: collapsed }" class="toggle-button">
+        <i class="fa fa-fw fa-angle-double-{{ collapsed ? 'right' : 'left' }}"></i>&nbsp;
+        <span>{{ 'Collapse Sidebar' | translate }}</span>
+    </div>
+</nav>

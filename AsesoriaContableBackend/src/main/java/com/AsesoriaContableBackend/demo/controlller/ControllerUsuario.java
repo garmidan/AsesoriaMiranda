@@ -31,7 +31,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -46,20 +45,31 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.AsesoriaContableBackend.demo.clases.Cliente;
 import com.AsesoriaContableBackend.demo.clases.Inicio;
+import com.AsesoriaContableBackend.demo.dao.ClienteDao;
+import com.AsesoriaContableBackend.demo.dao.FacturaDao;
 import com.AsesoriaContableBackend.demo.dao.MarcaDao;
 import com.AsesoriaContableBackend.demo.dao.MovimientoDao;
+import com.AsesoriaContableBackend.demo.dao.MunicipioRepository;
 import com.AsesoriaContableBackend.demo.dao.ProductoDao;
 import com.AsesoriaContableBackend.demo.dao.RolDao;
+import com.AsesoriaContableBackend.demo.dao.TipoClienteDao;
 import com.AsesoriaContableBackend.demo.dao.TipoDao;
 import com.AsesoriaContableBackend.demo.dao.TipoMovimientoDao;
+import com.AsesoriaContableBackend.demo.dao.TipoPagoDao;
 import com.AsesoriaContableBackend.demo.dao.UsuarioDao;
 import com.AsesoriaContableBackend.demo.email.EmailServiceImpl;
+import com.AsesoriaContableBackend.demo.entity.ClienteEntity;
+import com.AsesoriaContableBackend.demo.entity.DepartamentoEntity;
+import com.AsesoriaContableBackend.demo.entity.FacturaEntity;
 import com.AsesoriaContableBackend.demo.entity.MarcaEntity;
 import com.AsesoriaContableBackend.demo.entity.MovimientoEntity;
+import com.AsesoriaContableBackend.demo.entity.MunicipioEntity;
 import com.AsesoriaContableBackend.demo.entity.ProductoEntity;
 import com.AsesoriaContableBackend.demo.entity.RolEntity;
+import com.AsesoriaContableBackend.demo.entity.TipoClienteEntity;
 import com.AsesoriaContableBackend.demo.entity.TipoEntity;
 import com.AsesoriaContableBackend.demo.entity.TipoMovimientoEntity;
+import com.AsesoriaContableBackend.demo.entity.TipoPagoEntity;
 import com.AsesoriaContableBackend.demo.entity.UsuarioEntity;
 import com.AsesoriaContableBackend.demo.manejoerrores.ActorNotFoundException;
 import com.AsesoriaContableBackend.demo.step.Procesor;
@@ -91,10 +101,25 @@ public class ControllerUsuario {
 	ProductoDao productoDao;
 	
 	@Autowired
+	ClienteDao clienteDao;
+	
+	@Autowired
 	TipoDao tipoDao;
 	
 	@Autowired
 	MarcaDao marcaDao;
+	
+	@Autowired
+	MunicipioRepository municipioRepository;
+	
+	@Autowired
+	TipoClienteDao tipoClienteDao;
+	
+	@Autowired
+	TipoPagoDao tipoPagoDao;
+	
+	@Autowired
+	FacturaDao facturaDao;
 	
 	@Autowired
 	JobLauncher jobLauncher;
@@ -363,6 +388,8 @@ public class ControllerUsuario {
 			      .body(jsonObject.toString());
 	}
 	
+//	Movimiento entrada y salida
+	
 	@GetMapping("gettipomovimiento")
 	public ResponseEntity<List<TipoMovimientoEntity>> getTipoMovimiento(){
 		return new ResponseEntity<List<TipoMovimientoEntity>>(tipoMovimientoDao.findAll(), HttpStatus.OK);
@@ -376,6 +403,8 @@ public class ControllerUsuario {
 		try {
 			MarcaEntity mar = new MarcaEntity();
 			TipoEntity tip = new TipoEntity();
+			TipoPagoEntity tipoPagoEntity = new TipoPagoEntity();
+			FacturaEntity facturaEntity = new FacturaEntity();
 			if (movimientoEntity.getProducto().getMarca().getNombre() != "") {
 				mar.setIdmarca(Long.valueOf(0));
 				mar.setNombre(movimientoEntity.getProducto().getMarca().getNombre());
@@ -393,6 +422,12 @@ public class ControllerUsuario {
 			pro.setIdproducto(movimientoEntity.getProducto().getIdproducto());
 			pro.setTipo(movimientoEntity.getProducto().getTipo());
 			pro.setMarca(movimientoEntity.getProducto().getMarca());
+			tipoPagoEntity.setIdtipopago(3);
+			movimientoEntity.setIdtipopago(tipoPagoEntity);
+			facturaEntity.setIdfactura(Long.valueOf(13));
+			movimientoEntity.setIdfactura(facturaEntity);
+			movimientoEntity.setCliente("N/A");
+			movimientoEntity.setCuotas("N/A");
 			if (mar.getNombre() != "" && mar.getNombre() != null) {
 				mar = marcaDao.ultimo();
 				pro.setMarca(mar);
@@ -408,18 +443,20 @@ public class ControllerUsuario {
 				productoDao.save(movimientoEntity.getProducto());
 				ProductoEntity obtenerProducto = productoDao.obtenerProducto(movimientoEntity.getProducto().getCodigo());
 				movimientoEntity.setProducto(obtenerProducto);
+				System.out.println(movimientoEntity);
 				movimientoDao.save(movimientoEntity);
 				salida = 1;
 			} else {
 				Long sumaCant = validarCodigoUnico.getCantidad() + movimientoEntity.getCantidad();
 				movimientoEntity.setProducto(validarCodigoUnico);
 				productoDao.editCantidad(String.valueOf(sumaCant), validarCodigoUnico.getIdproducto());
+				System.out.println(movimientoEntity);
 				movimientoDao.save(movimientoEntity);
 				salida = 1;
 			}
 			
 		} catch (Exception e) {
-			// TODO: handle exception
+			System.out.println("Error");
 		}
 		return salida;
 	}
@@ -427,16 +464,29 @@ public class ControllerUsuario {
 	@PostMapping("registrosMovimientosSalida")
 	public int registrosMovimientosSalida(@RequestBody List<MovimientoEntity> listMovimientos) {
 		int salida = 0;
+		String codigoFactura = "" + (int) (Math.random() * 100000000);
+		FacturaEntity factEntity = new FacturaEntity();
+		factEntity.setCodigo(codigoFactura);
+		facturaDao.save(factEntity);
+		FacturaEntity factUltimo = facturaDao.ultimo();
 		for (MovimientoEntity movimientoEntity : listMovimientos) {
 			TipoMovimientoEntity tipoMovimientoEntity = new TipoMovimientoEntity();
 			tipoMovimientoEntity.setIdtipomovimiento(Long.valueOf(4));
 			movimientoEntity.setIdmovimiento(Long.valueOf(0));
 			movimientoEntity.setTipomovimiento(tipoMovimientoEntity);
+			movimientoEntity.setIdfactura(factUltimo);
 			Long resta = movimientoEntity.getProducto().getCantidad() - movimientoEntity.getCantidad();
 			productoDao.editCantidad(String.valueOf(resta), movimientoEntity.getProducto().getIdproducto());
 			movimientoDao.save(movimientoEntity);
 			salida = 1;
 		}
+		return salida;
+	}
+	
+	@PostMapping("registrarClienteMovimiento")
+	public int registrarClienteMovimiento(@RequestBody ClienteEntity clienteEntity) {
+		clienteDao.save(clienteEntity);
+		int salida = 1;
 		return salida;
 	}
 	
@@ -486,4 +536,39 @@ public class ControllerUsuario {
 		return new ResponseEntity<ProductoEntity>(datos, HttpStatus.OK);
 	}
 	
+	@GetMapping("getCliente/{cedulaonit}")
+	public ResponseEntity<ClienteEntity> getCliente(@PathVariable String cedulaonit){
+		ClienteEntity clienteEntity = clienteDao.obtenerCliente(cedulaonit);
+		return new ResponseEntity<ClienteEntity>(clienteEntity, HttpStatus.OK);
+	}
+	
+	@GetMapping("getMunicipio")
+	public ResponseEntity<List<MunicipioEntity>> getMunicipio(){
+		List<MunicipioEntity> municipioEntity = municipioRepository.findAll();
+		return new ResponseEntity<List<MunicipioEntity>>(municipioEntity, HttpStatus.OK);
+	}
+	
+	@GetMapping("getTipoCliente")
+	public ResponseEntity<List<TipoClienteEntity>> getTipoCliente(){
+		List<TipoClienteEntity> tipoList = tipoClienteDao.findAll();
+		return new ResponseEntity<List<TipoClienteEntity>>(tipoList, HttpStatus.OK);
+	}
+	
+	@GetMapping("getTipoPago")
+	public ResponseEntity<List<TipoPagoEntity>> getTipoPago(){
+		List<TipoPagoEntity> tipoList = tipoPagoDao.findAll();
+		return new ResponseEntity<List<TipoPagoEntity>>(tipoList, HttpStatus.OK);
+	}
+	
+	@GetMapping("getFactura")
+	public ResponseEntity<List<FacturaEntity>> getFactura(){
+		List<FacturaEntity> facturaList = facturaDao.findAllFactura();
+		return new ResponseEntity<List<FacturaEntity>>(facturaList, HttpStatus.OK);
+	}
+	
+	@GetMapping("getFacturaID/{codigo}")
+	public ResponseEntity<List<MovimientoEntity>> getFacturaID(@PathVariable Long codigo){
+		List<MovimientoEntity> movimientoEntity = movimientoDao.movimientoID(codigo);
+		return new ResponseEntity<List<MovimientoEntity>>(movimientoEntity, HttpStatus.OK);
+	}
 }

@@ -13,4 +13,7 @@ public interface MovimientoDao extends JpaRepository<MovimientoEntity, Long> {
 	@Query(value = "SELECT * FROM movimiento WHERE movimiento.idtipomovimiento = ?1", nativeQuery = true)
 	public List<MovimientoEntity> listaId(Long idtipomovimiento);
 	
+	@Query(value = "SELECT * FROM movimiento WHERE movimiento.idfactura = ?1", nativeQuery = true)
+	public List<MovimientoEntity> movimientoID(Long idfactura);
+	
 }

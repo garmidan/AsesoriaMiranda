@@ -52,12 +52,29 @@ public class MovimientoEntity {
 	@JoinColumn(name = "idtipomovimiento", nullable = false)
 	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) 
 	private TipoMovimientoEntity tipomovimiento;
+	
+	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@JoinColumn(name = "idfactura", nullable = false)
+	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) 
+	private FacturaEntity idfactura;
+	
+	@Column(name = "cliente")
+	private String cliente;
 
+	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@JoinColumn(name = "idtipopago", nullable = false)
+	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) 
+	private TipoPagoEntity idtipopago;
+	
+	@Column(name = "cuotas")
+	private String cuotas;
+	
 	public MovimientoEntity() {
 	}
 
 	public MovimientoEntity(Long idmovimiento, Long cantidad, Date fecha, Double precioentrada, String preciosalida,
-			String observacion, ProductoEntity producto, UsuarioEntity usuario, TipoMovimientoEntity tipomovimiento) {
+			String observacion, ProductoEntity producto, UsuarioEntity usuario, TipoMovimientoEntity tipomovimiento,
+			FacturaEntity idfactura, String cliente, TipoPagoEntity idtipopago, String cuotas) {
 		this.idmovimiento = idmovimiento;
 		this.cantidad = cantidad;
 		this.fecha = fecha;
@@ -67,6 +84,10 @@ public class MovimientoEntity {
 		this.producto = producto;
 		this.usuario = usuario;
 		this.tipomovimiento = tipomovimiento;
+		this.idfactura = idfactura;
+		this.cliente = cliente;
+		this.idtipopago = idtipopago;
+		this.cuotas = cuotas;
 	}
 
 	public Long getIdmovimiento() {
@@ -141,11 +162,45 @@ public class MovimientoEntity {
 		this.tipomovimiento = tipomovimiento;
 	}
 
+	public FacturaEntity getIdfactura() {
+		return idfactura;
+	}
+
+	public void setIdfactura(FacturaEntity idfactura) {
+		this.idfactura = idfactura;
+	}
+
+	public String getCliente() {
+		return cliente;
+	}
+
+	public void setCliente(String cliente) {
+		this.cliente = cliente;
+	}
+
+	public TipoPagoEntity getIdtipopago() {
+		return idtipopago;
+	}
+
+	public void setIdtipopago(TipoPagoEntity idtipopago) {
+		this.idtipopago = idtipopago;
+	}
+
+	public String getCuotas() {
+		return cuotas;
+	}
+
+	public void setCuotas(String cuotas) {
+		this.cuotas = cuotas;
+	}
+
 	@Override
 	public String toString() {
 		return "MovimientoEntity [idmovimiento=" + idmovimiento + ", cantidad=" + cantidad + ", fecha=" + fecha
 				+ ", precioentrada=" + precioentrada + ", preciosalida=" + preciosalida + ", observacion=" + observacion
-				+ ", producto=" + producto + ", usuario=" + usuario + ", tipomovimiento=" + tipomovimiento + "]";
+				+ ", producto=" + producto + ", usuario=" + usuario + ", tipomovimiento=" + tipomovimiento
+				+ ", idfactura=" + idfactura + ", cliente=" + cliente + ", idtipopago=" + idtipopago + ", cuotas="
+				+ cuotas + "]";
 	}
 
 	@Override
@@ -153,8 +208,12 @@ public class MovimientoEntity {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((cantidad == null) ? 0 : cantidad.hashCode());
+		result = prime * result + ((cliente == null) ? 0 : cliente.hashCode());
+		result = prime * result + ((cuotas == null) ? 0 : cuotas.hashCode());
 		result = prime * result + ((fecha == null) ? 0 : fecha.hashCode());
+		result = prime * result + ((idfactura == null) ? 0 : idfactura.hashCode());
 		result = prime * result + ((idmovimiento == null) ? 0 : idmovimiento.hashCode());
+		result = prime * result + ((idtipopago == null) ? 0 : idtipopago.hashCode());
 		result = prime * result + ((observacion == null) ? 0 : observacion.hashCode());
 		result = prime * result + ((precioentrada == null) ? 0 : precioentrada.hashCode());
 		result = prime * result + ((preciosalida == null) ? 0 : preciosalida.hashCode());
@@ -178,15 +237,35 @@ public class MovimientoEntity {
 				return false;
 		} else if (!cantidad.equals(other.cantidad))
 			return false;
+		if (cliente == null) {
+			if (other.cliente != null)
+				return false;
+		} else if (!cliente.equals(other.cliente))
+			return false;
+		if (cuotas == null) {
+			if (other.cuotas != null)
+				return false;
+		} else if (!cuotas.equals(other.cuotas))
+			return false;
 		if (fecha == null) {
 			if (other.fecha != null)
 				return false;
 		} else if (!fecha.equals(other.fecha))
 			return false;
+		if (idfactura == null) {
+			if (other.idfactura != null)
+				return false;
+		} else if (!idfactura.equals(other.idfactura))
+			return false;
 		if (idmovimiento == null) {
 			if (other.idmovimiento != null)
 				return false;
 		} else if (!idmovimiento.equals(other.idmovimiento))
+			return false;
+		if (idtipopago == null) {
+			if (other.idtipopago != null)
+				return false;
+		} else if (!idtipopago.equals(other.idtipopago))
 			return false;
 		if (observacion == null) {
 			if (other.observacion != null)
@@ -221,4 +300,5 @@ public class MovimientoEntity {
 		return true;
 	}
 
+	
 }
